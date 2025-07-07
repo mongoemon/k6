@@ -7,6 +7,20 @@
 # Test results
 reports/result.json
 reports/results.json
+reports/results_html.html
 
 # Log files
 *.log
+
+# Editor/IDE specific files
+.vscode/
+.idea/
+
+# Environment variables
+.env
+
+# TypeScript cache
+*.tsbuildinfo
+
+# npm debug logs
+npm-debug.log*
