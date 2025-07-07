@@ -27,7 +27,24 @@ Follow these steps to set up the project, run tests, and generate HTML reports:
 
 k6 natively executes JavaScript files. While you write your tests in TypeScript (`.ts` files) for better maintainability and type safety, these files are always transpiled (converted) into JavaScript (`.js` files) before k6 can run them. The HTML reports are generated from the results of these JavaScript executions.
 
-To run the performance tests, use the k6 command-line tool. While k6 primarily executes JavaScript, you can run your TypeScript test files after compilation or by using `ts-node` for on-the-fly transpilation.
+### Starting a New Test Script
+
+To start writing a new k6 test script, you can use the provided template files:
+
+*   **JavaScript Template:** `tests/template.js`
+*   **TypeScript Template:** `tests/template.ts`
+
+These templates include the basic structure for a k6 test, along with the `handleSummary` function for automatic JSON and HTML report generation. Simply copy the desired template and start customizing it for your specific testing needs.
+
+### Running Plain JavaScript Files
+
+k6 can directly execute plain JavaScript files without any compilation step. For example, to run `tests/testjs.js`:
+
+```bash
+k6 run tests/testjs.js
+```
+
+With the `handleSummary` function now configured in `tests/testjs.js`, running this test will automatically generate the HTML report.
 
 ### Recommended: Compile and Run from `dist`
 
@@ -47,6 +64,10 @@ Or for the traffic test:
 ```bash
 k6 run dist/tests/traffic_test.js
 ```
+Or for the API test:
+```bash
+k6 run dist/tests/api_test.js
+```
 
 ### For Quick Testing: Run Single `.ts` File with `ts-node`
 
@@ -58,6 +79,10 @@ k6 run <(npx ts-node tests/test.ts)
 Or for the traffic test:
 ```bash
 k6 run <(npx ts-node tests/traffic_test.ts)
+```
+Or for the API test:
+```bash
+k6 run <(npx ts-node tests/api_test.ts)
 ```
 
 *(Note: When using `ts-node` directly, the `handleSummary` function will still generate the `reports/results.json` and `reports/results_html.html` files as configured in your test scripts.)*
