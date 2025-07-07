@@ -1,0 +1,9 @@
+# Dependency directories
+/node_modules
+
+# Test results
+reports/result.json
+reports/results.json
+
+# Log files
+*.log
