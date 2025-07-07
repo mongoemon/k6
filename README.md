@@ -4,6 +4,79 @@
 
 This project contains performance tests written using k6. It's designed to help you assess the performance and reliability of your applications under various load conditions.
 
+## Types of Performance Tests
+
+This project includes scripts for various types of performance tests, each designed to answer different questions about your application's behavior under load. Understanding the goal and key metrics for each test type is crucial for effective analysis.
+
+### 1. Load Test
+*   **Main Goal:** To verify system performance under normal and anticipated peak concurrent user load.
+*   **What it is:** Simulates a realistic, expected number of concurrent users interacting with the application.
+*   **Key Metrics to Observe:**
+    *   `http_req_duration` (especially p(90), p(95)): To ensure response times meet SLAs under expected load.
+    *   `http_req_failed`: To confirm no errors occur under normal load.
+    *   `checks`: To ensure all functional validations pass.
+    *   `iterations` / `http_reqs`: To measure throughput (requests/iterations per second).
+
+### 2. Endurance Test (Soak Test)
+*   **Main Goal:** To identify performance degradation, memory leaks, and resource exhaustion over an extended period of sustained load.
+*   **What it is:** Sustains a moderate, constant load over a long duration (e.g., hours or days).
+*   **Key Metrics to Observe:**
+    *   Trends in `http_req_duration`: Look for gradual increases over time.
+    *   Trends in `http_req_failed`: Look for increasing error rates.
+    *   Resource utilization (CPU, Memory, Disk I/O, Network I/O): Monitor externally for leaks or exhaustion.
+    *   `vus`: To ensure the test maintains the desired load without dropping VUs.
+
+### 3. Peak Test (Spike Test)
+*   **Main Goal:** To assess system behavior and recovery from sudden, large increases in user load.
+*   **What it is:** Subjects the system to sudden, intense bursts of traffic for short periods, followed by a return to normal load.
+*   **Key Metrics to Observe:**
+    *   `http_req_duration` (during and immediately after the spike): How quickly does the system respond during and recover from the surge?
+    *   `http_req_failed`: Expect a temporary increase during the spike, but it should recover quickly.
+    *   `vus`: Observe how quickly k6 can ramp up and down VUs.
+    *   Recovery time: How long does it take for metrics to return to baseline after the spike?
+
+### 4. Stress Test
+*   **Main Goal:** To determine the system's breaking point and how it behaves under extreme, unsustainable load.
+*   **What it is:** Gradually increases the load beyond the system's expected capacity until performance significantly degrades or the system fails.
+*   **Key Metrics to Observe:**
+    *   `http_req_failed`: When does the error rate become unacceptable or the system starts returning errors?
+    *   `http_req_duration`: When do response times become unacceptably high?
+    *   `vus`: The number of virtual users at which the system breaks.
+    *   Resource utilization: Identify which resources (CPU, memory, database connections) become bottlenecks.
+
+### 5. Breakpoint / Capacity Test
+*   **Main Goal:** To find the maximum number of users or transactions a system can handle while still meeting predefined performance criteria (e.g., response time SLAs).
+*   **What it is:** Similar to a stress test, but the focus is on identifying the *limit* before failure, rather than just observing failure.
+*   **Key Metrics to Observe:**
+    *   `vus`: The exact number of virtual users at which performance thresholds are consistently breached.
+    *   `http_req_duration` and `http_req_failed`: To identify the point where these metrics cross acceptable limits.
+    *   `iterations` (throughput): To see the maximum throughput the system can sustain.
+
+### 6. Scalability / Step Test
+*   **Main Goal:** To understand how the system scales with increasing user load and to identify scaling limits or bottlenecks at different load levels.
+*   **What it is:** Gradually increases the load in predefined steps, often with pauses between steps, to observe performance at each increment.
+*   **Key Metrics to Observe:**
+    *   `http_req_duration` and `http_req_failed`: Analyze trends across each step. Do response times remain stable or degrade linearly/exponentially?
+    *   Resource utilization: How do resources respond to each step increase?
+    *   `iterations` (throughput): Does throughput increase proportionally with VUs, or does it plateau?
+
+### 7. Smoke Performance Test
+*   **Main Goal:** To quickly verify that the test environment and the application's basic functionality are working and performing as expected before running more extensive tests.
+*   **What it is:** A very light load test (e.g., 1 virtual user, a few iterations) targeting critical paths.
+*   **Key Metrics to Observe:**
+    *   `http_req_duration`: Should be very low and consistent.
+    *   `http_req_failed`: Must be 0%.
+    *   `checks`: Must be 100%.
+
+### 8. Chaos / Failover Test
+*   **Main Goal:** To verify the system's resilience and ability to withstand and recover from unexpected failures or disruptions.
+*   **What it is:** Intentionally introduces faults (e.g., network latency, service outages, resource exhaustion) while the system is under load.
+*   **Key Metrics to Observe:**
+    *   `http_req_failed` and `http_req_duration`: Observe behavior during and after the fault injection. How quickly do they recover?
+    *   Recovery time: How long does it take for the system to return to a stable state after the fault?
+    *   `checks`: To ensure data integrity and functional correctness are maintained.
+    *   External monitoring: Crucial for observing system health and component failures.
+
 ## Setup and Running Tests
 
 Follow these steps to set up the project, run tests, and generate HTML reports:
